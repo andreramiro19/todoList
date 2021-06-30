@@ -38,22 +38,14 @@ export default function App() {
         <View style={styles.items}>
           {/* This is where the tasks will go! */}
           {
-            taskItems.map((item, index, id) => {
+            taskItems.map((item, index) => {
               return (
-                <React.Fragment>
+
                 <TouchableOpacity key={index} onPress={() => completeTask(index)}>
                   <Task text={item}></Task>                      
                 </TouchableOpacity>   
 
-                <LottieView
-                  key={id}
-                  style={styles.heartLottie}
-                  source={require('../todolist/blueHeart.json')}
-                  autoPlay
-                  loop={false}                  
-                  ></LottieView>
 
-                </React.Fragment>
                                
               )                       
             })
@@ -71,9 +63,14 @@ export default function App() {
         <TextInput style={styles.input} placeholder={'Write a task'} value={task} onChangeText={text => setTask(text)}></TextInput>
 
         <TouchableOpacity onPress={() => handleAddTask()}>  
-          <View style={styles.addWrapper}>
-            <Text style={styles.addText}>+</Text>
-          </View>
+          
+            <LottieView
+              style={styles.plus}
+              source={require('../todoList/plus.json')}
+              resizeMode= "contain"
+              autoPlay
+            ></LottieView>
+          
         </TouchableOpacity>
       </KeyboardAvoidingView>
 
@@ -84,7 +81,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E8EAED',    
+    backgroundColor: '#373970',    
   },
   tasksWrapper: {
     paddingTop: 80,
@@ -93,13 +90,14 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: 'white',
   },
   items: {
     marginTop: 30,
   },
   writeTaskWrapper: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 10,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -114,15 +112,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: 250,
   },
-  addWrapper: {
-    width: 60,
-    height: 60,
-    backgroundColor: '#FFF',
-    borderRadius: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: '#C0C0C0',
-    borderWidth: 1,
+  plus: {
+    width: 70,
+    height: 70,
   },
   addText: {},  
   heartLottie: {
