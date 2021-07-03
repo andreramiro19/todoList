@@ -1,24 +1,28 @@
-import React, {useState} from 'react';
-import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import React, {useRef, useState} from 'react';
+import { KeyboardAvoidingView, StyleSheet, Text, View, TextInput, TouchableOpacity, Animated } from 'react-native';
 import Task from './components/Task';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Lottie from 'lottie-react-native';
 import LottieView from 'lottie-react-native'
-import hotdog from './hotdog.json';
+import pixelMario from './marioJumpingAgain.json';
 
 export default function App() {
 
-    {/*<SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Lottie resizeMode="contain" autoSize source={hotdog} autoPlay loop></Lottie>
-  </SafeAreaView>*/}
-
+  const progress = useRef(new Animated.Value(0)).current;
+  const [hasMario, setHasMario] = useState(false);
   const [task, setTask] = useState();
   const [taskItems, setTaskItems] = useState([]);
 
-  const handleAddTask = () => {
-    /*Keyboard.dismiss();*/
+  const handleMarioAnimation = () => {
     setTaskItems([...taskItems, task]);
     setTask(null);
+
+    const newValue = hasMario ? 0 : 1;
+
+    Animated.timing(progress, {
+      toValue: newValue,
+      duration: 1000,
+      useNativeDriver: true,
+      }).start();
+      setHasMario(!hasMario)
     
   }
 
@@ -29,52 +33,51 @@ export default function App() {
   }
 
   return (
-        <View style={styles.container}>
+    <React.Fragment>          
+      <View style={styles.container}> 
+        <LottieView style={styles.mario} progress={progress} source={pixelMario}></LottieView>                                
       
-      {/*Todays Tasks */}
-      <View style={styles.tasksWrapper}>
-        <Text style={styles.sectionTitle}>Today's Tasks</Text>
+          {/*Todays Tasks */}
+          <View style={styles.tasksWrapper}>
+            <Text style={styles.sectionTitle}>Today's Tasks</Text>      
+              <View style={styles.items}>          
+        
+                {/* This is where the tasks will go! */}
+                {
+                  taskItems.map((item, index) => {
+                  return (
+                  <TouchableOpacity key={index} onPress={() => completeTask(index)}>
+                    <Task text={item}></Task>                                                        
+                  </TouchableOpacity>                                                  
+                  )                                     
+                })
+            
+                }        
+         
+              </View>        
+        
+          </View>
 
-        <View style={styles.items}>
-          {/* This is where the tasks will go! */}
-          {
-            taskItems.map((item, index) => {
-              return (
+        {/* Write a task */}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.writeTaskWrapper}
+          >
+          <TextInput style={styles.input} placeholder={'Write a task'} value={task} onChangeText={text => setTask(text)}></TextInput>
 
-                <TouchableOpacity key={index} onPress={() => completeTask(index)}>
-                  <Task text={item}></Task>                      
-                </TouchableOpacity>   
-
-
-                               
-              )                       
-            })
-          }          
-          {/*<Task text={'Alguma coisa'} />
-          <Task text={'Dedessa gostosa'}></Task>*/}
-        </View>
-      </View>
-
-      {/* Write a task */}
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.writeTaskWrapper}
-      >
-        <TextInput style={styles.input} placeholder={'Write a task'} value={task} onChangeText={text => setTask(text)}></TextInput>
-
-        <TouchableOpacity onPress={() => handleAddTask()}>  
-          
+          <TouchableOpacity onPress={handleMarioAnimation}>          
             <LottieView
               style={styles.plus}
               source={require('../todoList/plus.json')}
               resizeMode= "contain"
               autoPlay
             ></LottieView>
-          
-        </TouchableOpacity>
-      </KeyboardAvoidingView>
+          </TouchableOpacity> 
 
-    </View>
+        </KeyboardAvoidingView>      
+
+      </View>              
+    </React.Fragment>    
   );
 }
 
@@ -119,5 +122,14 @@ const styles = StyleSheet.create({
   addText: {},  
   heartLottie: {
     paddingTop: 10,    
-},
+  },
+  mario: {
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
 });
