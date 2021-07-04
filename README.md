@@ -7,7 +7,6 @@ Uma simples lista de tarefas usando React Native e animações usando Lottie.
 # Tecnologias utilizadas
 ## Front end
 - Javascript
-- Json
 - React Native
 - Lottie
 - Expo
